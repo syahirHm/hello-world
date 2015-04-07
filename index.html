@@ -1,34 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style type="text/css">
-      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
-    </style>
-    <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js">
-    </script>
-    <script type="text/javascript">
-      function initialize() {
-        var mapOptions = {
-          center: { lat: 3.099293, lng: 101.644858},
-          zoom: 12
-        };
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
-            mapOptions);
-      }
-      function loadScript() {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = 'https://maps.googleapis.com/maps/api/js?=AIzaSyAl3kxsx-Kk_RZGS-qjLBqcY-mbCLB8hQQ&amp;sensor=false' +
-      '&signed_in=true&callback=initialize';
-  document.body.appendChild(script);
-}
-
-window.onload = loadScript;
-
-    </script>
-  </head>
-  <body>
-<div id="map-canvas"></div>
-  </body>
+    <head>
+        <style type="text/css">
+            html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+        </style>
+        <script type="text/javascript"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY7PO96J35_-z8TGWjNsd--Di5yQvgKL8&amp;sensor=false">
+        </script>
+        <script>
+            function initialise() {
+                var myLatlng = new google.maps.LatLng(3.136840, 101.622621); // Add the coordinates
+                var mapOptions = {
+                    zoom: 8, // The initial zoom level when your map loads (0-20)
+                    minZoom: 6, // Minimum zoom level allowed (0-20)
+                    maxZoom: 20, // Maximum soom level allowed (0-20)
+                    zoomControl: true, // Set to true if using zoomControlOptions below, or false to remove all zoom controls.
+                    zoomControlOptions: {
+                        style: google.maps.ZoomControlStyle.DEFAULT // Change to SMALL to force just the + and - buttons.
+                    },
+                    center: myLatlng, // Centre the Map to our coordinates variable
+                    mapTypeId: google.maps.MapTypeId.ROADMAP, // Set the type of Map
+                    scrollwheel: false, // Disable Mouse Scroll zooming (Essential for responsive sites!)
+    // All of the below are set to true by default, so simply remove if set to true:
+                    panControl: false, // Set to false to disable
+                    mapTypeControl: false, // Disable Map/Satellite switch
+                    scaleControl: false, // Set to false to hide scale
+                    streetViewControl: false, // Set to disable to hide street view
+                    overviewMapControl: false, // Set to false to remove overview control
+                    rotateControl: false // Set to false to disable rotate control
+                }
+                var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions); // Render our map within the empty div
+              //  var image = new google.maps.MarkerImage("https://www.creare.co.uk/wp-content/uploads/2013/08/marker.png", null, null, null, new google.maps.Size(40, 52)); // Create a variable for our marker image.
+//                var marker = new google.maps.Marker({// Set the marker
+//                    position: myLatlng, // Position marker to coordinates
+//                    icon: image, //use our image as the marker
+//                    map: map, // assign the marker to our map variable
+//                    title: 'Click to visit our company on Google Places' // Marker ALT Text
+//                });
+    // google.maps.event.addListener(marker, 'click', function() { // Add a Click Listener to our marker
+    // window.location='http://www.snowdonrailway.co.uk/shop_and_cafe.php'; // URL to Link Marker to (i.e Google Places Listing)
+    // });
+//                var infowindow = new google.maps.InfoWindow({// Create a new InfoWindow
+//                    content: "<h3>Snowdown Summit Cafe</h3><p>Railway Drive-through available.</p>" // HTML contents of the InfoWindow
+//                });
+//                google.maps.event.addListener(marker, 'click', function () { // Add a Click Listener to our marker
+//                    infowindow.open(map, marker); // Open our InfoWindow
+//                });
+//                google.maps.event.addDomListener(window, 'resize', function () {
+//                    map.setCenter(myLatlng);
+//                }); // Keeps the Pin Central when resizing the browser on responsive sites
+            }
+            google.maps.event.addDomListener(window, 'load', initialise); // Execute our 'initialise' function once the page has loaded.
+        </script> 
+    </head>
+    <body>
+        <div id="map-canvas"></div>
+    </body>
 </html>
