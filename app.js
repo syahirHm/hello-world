@@ -1,3 +1,1 @@
-angular.module('mapsApp', [
-  'MapCtrl.controllers'
-]);
+angular.module('mapsApp', []);
