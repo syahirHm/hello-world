@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="mapsApp">
 <head>
 <title>
 Maps try2
@@ -22,7 +22,7 @@ h2 {
 </head>
 
 <body>
-<div ng-app="mapsApp" ng-controller="MapCtrl">
+<div  ng-controller="MapCtrl">
     <div id="map"></div>
     <div id="class" ng-repeat="marker in markers | orderBy : 'title'">
          <a href="#" ng-click="openInfoWindow($event, marker)">{{marker.title}}</a>
