@@ -1,2 +1,2 @@
-# hello-world
-Just playing with google map to build android apps with phonegap
+# Ionic App geolocation
+Creating a geolocation app with ionic and angularjs
