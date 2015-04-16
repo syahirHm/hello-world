@@ -1,59 +1,112 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <style type="text/css">
-            html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
-        </style>
-        <script type="text/javascript"
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDY7PO96J35_-z8TGWjNsd--Di5yQvgKL8&amp;sensor=false">
-        </script>
-        <script>
-            function initialise() {
-                var myLatlng = new google.maps.LatLng(3.136840, 101.622621); // Add the coordinates
-                var mapOptions = {
-                    zoom: 8, // The initial zoom level when your map loads (0-20)
-                    minZoom: 6, // Minimum zoom level allowed (0-20)
-                    maxZoom: 20, // Maximum soom level allowed (0-20)
-                    zoomControl: true, // Set to true if using zoomControlOptions below, or false to remove all zoom controls.
-                    zoomControlOptions: {
-                        style: google.maps.ZoomControlStyle.DEFAULT // Change to SMALL to force just the + and - buttons.
-                    },
-                    center: myLatlng, // Centre the Map to our coordinates variable
-                    mapTypeId: google.maps.MapTypeId.ROADMAP, // Set the type of Map
-                    scrollwheel: false, // Disable Mouse Scroll zooming (Essential for responsive sites!)
-    // All of the below are set to true by default, so simply remove if set to true:
-                    panControl: false, // Set to false to disable
-                    mapTypeControl: false, // Disable Map/Satellite switch
-                    scaleControl: false, // Set to false to hide scale
-                    streetViewControl: false, // Set to disable to hide street view
-                    overviewMapControl: false, // Set to false to remove overview control
-                    rotateControl: false // Set to false to disable rotate control
-                }
-                var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions); // Render our map within the empty div
-              //  var image = new google.maps.MarkerImage("https://www.creare.co.uk/wp-content/uploads/2013/08/marker.png", null, null, null, new google.maps.Size(40, 52)); // Create a variable for our marker image.
-//                var marker = new google.maps.Marker({// Set the marker
-//                    position: myLatlng, // Position marker to coordinates
-//                    icon: image, //use our image as the marker
-//                    map: map, // assign the marker to our map variable
-//                    title: 'Click to visit our company on Google Places' // Marker ALT Text
-//                });
-    // google.maps.event.addListener(marker, 'click', function() { // Add a Click Listener to our marker
-    // window.location='http://www.snowdonrailway.co.uk/shop_and_cafe.php'; // URL to Link Marker to (i.e Google Places Listing)
-    // });
-//                var infowindow = new google.maps.InfoWindow({// Create a new InfoWindow
-//                    content: "<h3>Snowdown Summit Cafe</h3><p>Railway Drive-through available.</p>" // HTML contents of the InfoWindow
-//                });
-//                google.maps.event.addListener(marker, 'click', function () { // Add a Click Listener to our marker
-//                    infowindow.open(map, marker); // Open our InfoWindow
-//                });
-//                google.maps.event.addDomListener(window, 'resize', function () {
-//                    map.setCenter(myLatlng);
-//                }); // Keeps the Pin Central when resizing the browser on responsive sites
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Geo Location Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Example of how geo location api works">
+    <meta name="author" content="Victor Shi">
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&language=en"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="event.js"></script>
+    <script src="ui-map.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <style type="text/css">
+        .map {
+            height: 400px;
+            width: 100%;
+        }
+        .main {
+            margin-top: 30px;
+        }
+    </style>
+	
+</head>
+
+<body ng-app="geo">
+    <div class="container main" ng-controller="mainController">
+        <form>
+            <div class="row">
+                <div id="map_canvas" ui-map="model.myMap" class="map" ui-options="mapOptions">
+                </div>
+                <div ng-repeat="marker in myMarkers" ui-map-marker="myMarkers[$index]">
+                </div>
+            </div>
+            <div class="row" ng-show="showResult()">
+               Latitude: {{lat}} <br />
+               Longitude: {{lng}} <br />
+               Accuracy: {{accuracy}}
+            </div>
+            <div class="row" ng-show="!showResult()">
+                Error : {{error}}
+                Error Code: {{error.code}}
+            </div>  
+			<div class="row">
+						
+			</div>			
+        </form>
+    </div>
+</body>
+<script type="text/javascript">
+    var app = angular.module("geo", ["ui.map", "ui.event"])
+    .controller("mainController", function ($scope) {
+        $scope.lat = "0";
+        $scope.lng = "0";
+        $scope.accuracy = "0";
+        $scope.error = "";
+        $scope.model = { myMap: undefined };
+        $scope.myMarkers = [];
+
+        $scope.showResult = function () {
+            return $scope.error == "";
+        }
+
+        $scope.mapOptions = {
+            center: new google.maps.LatLng($scope.lat, $scope.lng),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        $scope.showPosition = function (position) {
+            $scope.lat = position.coords.latitude;
+            $scope.lng = position.coords.longitude;
+            $scope.accuracy = position.coords.accuracy;
+            $scope.$apply();
+
+            var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
+            $scope.model.myMap.setCenter(latlng);
+            $scope.myMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
+        }
+
+        $scope.showError = function (error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    $scope.error = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    $scope.error = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    $scope.error = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    $scope.error = "An unknown error occurred."
+                    break;
             }
-            google.maps.event.addDomListener(window, 'load', initialise); // Execute our 'initialise' function once the page has loaded.
-        </script> 
-    </head>
-    <body>
-        <div id="map-canvas"></div>
-    </body>
+            $scope.$apply();
+        }
+
+        $scope.getLocation = function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition($scope.showPosition, $scope.showError);
+            }
+            else {
+                $scope.error = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        $scope.getLocation();
+    });
+
+</script>
 </html>
